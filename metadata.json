@@ -1,0 +1,5 @@
+{
+  "name": "Nomad Maps – Psytrance Travel Agency",
+  "description": "Interactive global map of psytrance festivals with travel planning and psychedelic analytics.",
+  "requestFramePermissions": ["geolocation"]
+}

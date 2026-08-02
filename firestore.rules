@@ -1,0 +1,70 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        ((exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
+         (request.auth.token.email == "ramadageografia@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidFestival(data) {
+      return data.nome is string && data.nome.size() > 0 && data.nome.size() < 100 &&
+             data['país'] is string && data['país'].size() > 0 &&
+             data.latitude is number && data.longitude is number &&
+             data.data is string;
+    }
+
+    function isValidUser(data) {
+      return data.uid is string && data.email is string;
+    }
+
+    function isValidCheckIn(data) {
+      return data.userId == request.auth.uid &&
+             data.festivalId is string &&
+             data.timestamp is string;
+    }
+
+    function isValidRoute(data) {
+      return data.userId == request.auth.uid &&
+             data.festivalIds is list;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /festivals/{festivalId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId);
+    }
+
+    match /checkins/{checkinId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && isValidCheckIn(request.resource.data);
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    match /routes/{routeId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && isValidRoute(request.resource.data);
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid && isValidRoute(request.resource.data);
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+  }
+}

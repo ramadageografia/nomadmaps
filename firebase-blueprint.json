@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Festival": {
+      "title": "Festival",
+      "description": "A psytrance festival event",
+      "type": "object",
+      "properties": {
+        "nome": { "type": "string" },
+        "país": { "type": "string" },
+        "cidade": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "data": { "type": "string", "format": "date-time" },
+        "vertentes": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["Ativo", "Inativo"] },
+        "descrição": { "type": "string" },
+        "continente": { "type": "string" }
+      },
+      "required": ["nome", "país", "latitude", "longitude", "data"]
+    },
+    "User": {
+      "title": "User",
+      "description": "Application user profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "CheckIn": {
+      "title": "CheckIn",
+      "description": "A user check-in at a festival",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "festivalId": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "photoUrl": { "type": "string" },
+        "comment": { "type": "string" }
+      },
+      "required": ["userId", "festivalId", "timestamp"]
+    },
+    "TravelRoute": {
+      "title": "TravelRoute",
+      "description": "A saved travel route for a user",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "festivalIds": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "festivalIds"]
+    }
+  },
+  "firestore": {
+    "/festivals/{festivalId}": {
+      "schema": "Festival",
+      "description": "Global collection of festivals"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/checkins/{checkinId}": {
+      "schema": "CheckIn",
+      "description": "User check-ins at festivals"
+    },
+    "/routes/{routeId}": {
+      "schema": "TravelRoute",
+      "description": "Saved travel routes"
+    }
+  }
+}
