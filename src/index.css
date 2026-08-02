@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@theme {
+  --color-psy-purple: #8b5cf6;
+  --color-psy-magenta: #d946ef;
+  --color-psy-cyan: #22d3ee;
+  --color-psy-neon: #00ff00;
+  --color-psy-dark: #0a0a0a;
+  
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-psy-dark text-white font-sans antialiased;
+    background-image: 
+      radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(34, 211, 238, 0.15) 0%, transparent 40%);
+    background-attachment: fixed;
+  }
+}
+
+@layer components {
+  .psy-card {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 transition-all duration-300;
+  }
+  
+  .psy-card:hover {
+    @apply border-psy-cyan/50 shadow-[0_0_20px_rgba(34,211,238,0.2)];
+  }
+  
+  .psy-button {
+    @apply px-6 py-3 rounded-full font-medium transition-all duration-300 flex items-center gap-2;
+  }
+  
+  .psy-button-primary {
+    @apply bg-gradient-to-r from-psy-purple to-psy-magenta text-white shadow-[0_0_15px_rgba(139,92,246,0.4)] hover:shadow-[0_0_25px_rgba(139,92,246,0.6)] hover:scale-105;
+  }
+  
+  .psy-button-outline {
+    @apply border border-psy-cyan text-psy-cyan hover:bg-psy-cyan/10;
+  }
+
+  .glow-text {
+    text-shadow: 0 0 10px currentColor;
+  }
+}
+
+/* Leaflet Overrides */
+.leaflet-container {
+  @apply rounded-2xl border border-white/10 !bg-psy-dark;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply !bg-psy-dark !text-white border border-psy-cyan/30 !rounded-xl;
+}
+
+.leaflet-popup-tip {
+  @apply !bg-psy-dark border-psy-cyan/30;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 211, 238, 0.4);
+}
+
+.psy-mode-active {
+  animation: bg-shift 20s infinite alternate;
+}
+
+@keyframes bg-shift {
+  0% { background-color: #0a0a0a; }
+  50% { background-color: #1a0b2e; }
+  100% { background-color: #0d1b2a; }
+}
+
+.psy-mode-active .psy-card {
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.1);
+  animation: border-glow 4s infinite alternate;
+}
+
+@keyframes border-glow {
+  0% { border-color: rgba(139, 92, 246, 0.3); }
+  100% { border-color: rgba(34, 211, 238, 0.5); }
+}
+
+.psy-mode-active .glow-text {
+  animation: text-flicker 3s infinite;
+}
+
+@keyframes text-flicker {
+  0%, 100% { opacity: 1; text-shadow: 0 0 10px currentColor; }
+  50% { opacity: 0.8; text-shadow: 0 0 20px currentColor; }
+}
